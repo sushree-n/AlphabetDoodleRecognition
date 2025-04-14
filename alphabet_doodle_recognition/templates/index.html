@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alphabet Doodle Recognition</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    canvas {
+      background-color: black;
+      cursor: crosshair;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-200 font-sans min-h-screen">
+  <div class="container mx-auto p-6">
+    <h1 class="text-4xl font-bold text-center mb-6">Alphabet Doodle Recognition</h1>
+
+    <div class="flex flex-col items-center gap-4">
+      <!-- Canvas -->
+      <canvas id="drawingCanvas" width="500" height="500" class="border border-gray-700 shadow-md rounded-lg"></canvas>
+
+      <!-- Buttons -->
+      <div class="flex gap-4">
+        <button onclick="clearCanvas()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded shadow-md transition duration-300">
+          Clear
+        </button>
+        <button onclick="sendToServer()" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded shadow-md transition duration-300">
+          Predict
+        </button>
+      </div>
+
+      <!-- Prediction Result -->
+      <p id="result" class="text-lg font-medium text-green-400 mt-2"></p>
+    </div>
+  </div>
+
+  <script>
+    const canvas = document.getElementById("drawingCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Set black background and white stroke
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    let drawing = false;
+
+    canvas.addEventListener("mousedown", (e) => {
+      drawing = true;
+      ctx.beginPath();
+      ctx.moveTo(e.offsetX, e.offsetY);
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (drawing) {
+        ctx.lineTo(e.offsetX, e.offsetY);
+        ctx.stroke();
+      }
+    });
+
+    canvas.addEventListener("mouseup", () => {
+      drawing = false;
+    });
+
+    canvas.addEventListener("mouseleave", () => {
+      drawing = false;
+    });
+
+    function clearCanvas() {
+      ctx.fillStyle = "black";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      document.getElementById("result").textContent = "";  // Clear prediction text
+    }
+
+    function sendToServer() {
+      const result = document.getElementById("result");
+      result.textContent = "Predicting...";
+
+      canvas.toBlob((blob) => {
+        const formData = new FormData();
+        formData.append("image", blob, "doodle.png");
+
+        fetch("/predict", {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+          result.textContent = `Prediction: ${data.prediction}`;
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          result.textContent = "Prediction failed.";
+        });
+      });
+    }
+  </script>
+</body>
+</html>
