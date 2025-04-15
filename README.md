@@ -13,7 +13,7 @@ Check out the live app on Hugging Face Spaces:
 
 Users draw letters on a canvas. The app predicts the drawn alphabet using a trained CNN model on the EMNIST Letters dataset.
 
-![App Screenshot](static/demo.gif)
+![App Screenshot](alphabet_doodle_recognition/static/demo.gif)
 
 ---
 
