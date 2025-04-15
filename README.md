@@ -3,7 +3,12 @@
 An interactive deep learning web app that recognizes handwritten English alphabets drawn on a canvas. Built using a custom-trained ResNet18 model and deployed with Flask.
 
 ---
+## 🌐 Hosted Web App
 
+Check out the live app on Hugging Face Spaces:  
+👉 [Alphabet Doodle Recognition on Hugging Face](https://huggingface.co/spaces/sushreen/AlphabetDoodleRecognition)
+
+---
 ## 🚀 Demo
 
 Users draw letters on a canvas. The app predicts the drawn alphabet using a trained CNN model on the EMNIST Letters dataset.
